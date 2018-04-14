@@ -1,41 +1,43 @@
+# Separate into boom mats
+# Air can be compressed, mats cant
+
 # Units are arbitrary as long as you're consistent
 
 volumeUnit = "cm3"
 pressureUnit = "atm"
 
-# Boom box's height
-boxHeight = 10
+boxHeight = 2.0
+boxLength = 7.0
+boxWidth  = 3.0
 
-# The longest box dimension
-boxLength = 20.0
+boomLength     = 90.0
+innerBoomWidth = 1.8
+outerBoomWidth = 2.0
 
-# The dimension corresponding to the boom's width
-boxWidth  = 10.0
+teflonThickness     = 0.01
+fibreGlassThickness = 0.01
 
-boomLength    = 500.0
-boomWidth     = 5.0
-boomThickness = 1.0
+airVolume = 30.0
 
-boomPressure = 1.0
+unpackedBoomPressure = 1.0
 
 #------------------#
 
-print "Boom pressure:      ", boomPressure,pressureUnit
+outer = 2.0 * teflonThickness     * boomLength * innerBoomWidth
+mid   = 2.0 * fibreGlassThickness * boomLength * innerBoomWidth
+inner = 2.0 * teflonThickness     * boomLength * innerBoomWidth
 
-boomVolume = boomLength * boomWidth * boomThickness
-print "Boom volume:        ", boomVolume,volumeUnit
+materialVolume = outer + mid + inner
 
-packedBoomVolume = boomWidth * boxLength * boxHeight
+packedAirVolume = (boxHeight * innerBoomWidth * boxLength) - materialVolume
 
-if packedBoomVolume > boomVolume:
-    packedBoomVolume = boomVolume
+packedAirPressure = (unpackedBoomPressure * airVolume) / packedAirVolume
 
-print "Packed boom volume: ",packedBoomVolume,volumeUnit
+if packedAirVolume < 0:
+    print "No BOOM ROOM for specified parameters"
+    exit()
 
-compressionFactor = packedBoomVolume / boomVolume
-
-print "Compression factor:  " + str(compressionFactor) + "x original boom volume"
-
-packedPressure = (boomPressure * boomVolume) / packedBoomVolume
-
-print "Pressure exerted by packed boom: ",packedPressure,pressureUnit
+print "Uncompressed air volume:  ",airVolume,volumeUnit
+print "Uncompressed air pressure:",unpackedBoomPressure,pressureUnit
+print "Compressed air volume:    ",packedAirVolume,volumeUnit
+print "Compressed air pressure:  ",packedAirPressure,pressureUnit
